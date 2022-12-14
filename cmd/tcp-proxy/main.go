@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	version = "0.0.1"
+	version = "0.0.2"
 	connid  = uint64(0)
 	logger  proxy.ColorLogger
 
@@ -22,6 +22,7 @@ var (
 	verbose          = flag.Bool("v", false, "display server actions")
 	veryverbose      = flag.Bool("vv", false, "display server actions and all tcp data")
 	nagles           = flag.Bool("n", false, "disable nagles algorithm")
+	keepAlive        = flag.Bool("k", false, "tcp keepAlive")
 	hex              = flag.Bool("h", false, "output hex")
 	colors           = flag.Bool("c", false, "output ansi colors")
 )
@@ -73,6 +74,7 @@ func main() {
 		p = proxy.New(conn, laddr, r1addr, r2addr)
 
 		p.Nagles = *nagles
+		p.KeepAlive = *keepAlive
 		p.OutputHex = *hex
 		p.Log = proxy.ColorLogger{
 			Verbose:     *verbose,

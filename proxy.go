@@ -17,6 +17,7 @@ type Proxy struct {
 	buffSecondRemote chan []byte
 	// Settings
 	Nagles    bool
+	KeepAlive bool
 	Log       Logger
 	OutputHex bool
 }
@@ -40,6 +41,10 @@ type setNoDelayer interface {
 	SetNoDelay(bool) error
 }
 
+type setKeepAlive interface {
+	SetKeepAlive(bool) error
+}
+
 // Start - open connection to remote and start proxying data.
 func (p *Proxy) Start() {
 	defer p.lconn.Close()
@@ -60,7 +65,7 @@ func (p *Proxy) Start() {
 		return
 	}
 	defer p.r2conn.Close()
-	
+
 	//nagles?
 	if p.Nagles {
 		if conn, ok := p.lconn.(setNoDelayer); ok {
@@ -71,6 +76,19 @@ func (p *Proxy) Start() {
 		}
 		if conn, ok := p.r2conn.(setNoDelayer); ok {
 			conn.SetNoDelay(true)
+		}
+	}
+
+	//KeepAlive?
+	if p.KeepAlive {
+		if conn, ok := p.lconn.(setKeepAlive); ok {
+			conn.SetKeepAlive(true)
+		}
+		if conn, ok := p.r1conn.(setKeepAlive); ok {
+			conn.SetKeepAlive(true)
+		}
+		if conn, ok := p.r2conn.(setKeepAlive); ok {
+			conn.SetKeepAlive(true)
 		}
 	}
 

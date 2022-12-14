@@ -16,9 +16,10 @@ $ go build -o tcp-proxy cmd/tcp-proxy/main.go
 
 ```
 $ ./tcp-proxy --help
-Usage of tcp-proxy:
+Usage of ./tcp-proxy:
   -c	output ansi colors
   -h	output hex
+  -k	tcp keepAlive
   -l string
     	local address (default ":9999")
   -n	disable nagles algorithm
